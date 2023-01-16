@@ -1,0 +1,22 @@
+body {
+  background: url('/public/img/bg.png') repeat;
+  background-size: cover;
+}
+
+.footer {
+  font-size: 1.5rem;
+  text-align: center;
+  margin: 1rem auto;
+  color: white;
+}
+
+.footer a {
+  color: #7a724b !important;
+}
+
+.bingoslot {
+  -webkit-filter: drop-shadow(1.15px 1.15px 0 black)
+    drop-shadow(-1.15px -1.15px 0 black);
+  filter: drop-shadow(1.15px 1.15px 0 black)
+    drop-shadow(-1.15px -1.15px 0 black);
+}

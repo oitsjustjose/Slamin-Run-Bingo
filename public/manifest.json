@@ -1,0 +1,15 @@
+{
+  "short_name": "HiFi Guides",
+  "name": "A Website for Solving All your HiFi Needs",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#00b5ad",
+  "background_color": "#252525"
+}
