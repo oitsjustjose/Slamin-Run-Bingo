@@ -1,18 +1,18 @@
-FROM node:16-alpine AS builder
+FROM node:16.17.1-alpine3.15 AS builder
 
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN yarn install
 
 COPY . .
-RUN npm run build
-FROM node:16-alpine AS server
+RUN yarn run build
+FROM node:16.17.1-alpine3.15 AS server
 
 ENV NODE_ENV=production
-RUN npm install -g serve
+RUN yarn global add serve
 
 WORKDIR /app
 COPY package*.json ./
