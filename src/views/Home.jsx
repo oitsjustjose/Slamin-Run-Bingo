@@ -1,82 +1,111 @@
 /* eslint-disable no-plusplus */
-import React from 'react';
+import React, { useState } from 'react';
+import Confetti from 'react-confetti';
 import { Button, Popup } from 'semantic-ui-react';
+import { GridSize } from '../App';
 import BingoSlot from '../components/BingoSlot';
 import { LoadDataOrFallback, SaveDataToAppStorage, ClearSavedData } from '../data/Loader';
-import Freespace from '../data/weapons/freespaec.png';
+
+const CheckForBingpot = (data /* {src: img, hit: bool}[] */) => {
+  let bingpot = true;
+  let rowIdx = 0;
+  let colIdx = 0;
+
+  for (rowIdx = 0; rowIdx < GridSize; rowIdx++) {
+    bingpot = true;
+    for (colIdx = 0; colIdx < GridSize; colIdx++) {
+      if (!data[rowIdx][colIdx].hit) {
+        bingpot = false;
+        break;
+      }
+    }
+    if (bingpot) return true;
+  }
+
+  for (colIdx = 0; colIdx < GridSize; colIdx++) {
+    bingpot = true;
+    for (rowIdx = 0; rowIdx < GridSize; rowIdx++) {
+      if (!data[rowIdx][colIdx].hit) {
+        bingpot = false;
+        break;
+      }
+    }
+    if (bingpot) return true;
+  }
+
+  bingpot = true;
+  rowIdx = 0;
+  colIdx = 0;
+  while (rowIdx < GridSize && colIdx < GridSize) {
+    if (!data[rowIdx][colIdx].hit) {
+      bingpot = false;
+      break;
+    }
+    rowIdx++;
+    colIdx++;
+  }
+
+  if (bingpot) return true;
+
+  bingpot = true;
+  rowIdx = 0;
+  colIdx = (GridSize - 1);
+  while (rowIdx < GridSize) {
+    if (!data[rowIdx][colIdx].hit) {
+      bingpot = false;
+      break;
+    }
+    rowIdx++;
+    colIdx--;
+  }
+
+  return bingpot;
+};
 
 export default () => {
+  const [showConfetti, setShowConfetti] = useState(false);
+
   const data = LoadDataOrFallback();
   SaveDataToAppStorage(data);
 
-  const boardDims = {
-    width: 7, height: 7,
-  };
-
-  const bingoSlots = data.map((x, idx) => (
-    <BingoSlot
-      src={x.src}
-      hitIn={x.hit}
-      // eslint-disable-next-line react/no-array-index-key
-      key={idx}
-      propagateChanges={(newState) => {
-        data[idx].hit = newState;
-        SaveDataToAppStorage(data);
-      }}
-    />
-  ));
-
-  let idx = 0;
   const rows = [];
-
-  for (let row = 1; row <= boardDims.height; row++) {
-    const cols = [];
-    for (let col = 1; col <= boardDims.width; col++) {
-      if (!(row === Math.round(boardDims.height / 2)
-       && col === Math.round(boardDims.width / 2))) {
-        cols.push(bingoSlots[idx]);
-        idx++;
-      } else {
-        // Special case for the freespace, which lives at the end of the data array
-        cols.push(
+  data.forEach((row, rowIdx) => {
+    rows.push(
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+        {row.map((x, colIdx) => (
           <BingoSlot
-            src={Freespace}
-            hitIn={data[data.length - 1].hit}
-            key="freespaec"
+            src={x.src}
+            hitIn={x.hit}
+            // eslint-disable-next-line react/no-array-index-key
+            key={colIdx}
             propagateChanges={(newState) => {
-              data[data.length - 1].hit = newState;
+              data[rowIdx][colIdx].hit = newState;
               SaveDataToAppStorage(data);
+              if (CheckForBingpot(data)) {
+                setShowConfetti(true);
+                // setTimeout(() => setShowConfetti(false), 3000);
+              }
             }}
-          />,
-        );
-        // cols.push(<Blank />);
-      }
-    }
-
-    const tblRow = (
-      <div
-        key={row}
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-        }}
-      >
-        {cols}
-      </div>
+          />
+        ))}
+      </div>,
     );
-    rows.push(tblRow);
-  }
+  });
 
   return (
     <div>
+      <Confetti
+        run={showConfetti}
+        recycle={false}
+        colors={['#ffd300', '#88e4e1', '#ff2c5f', '#fe8102', '#47e4af', '#008ec0']}
+      />
+
       <div style={{ display: '2rem auto', textAlign: 'center' }}>
         <img
           src="/img/title.png"
           alt="title"
           style={{
             userSelect: 'none',
-            // display: 'block',
             textAlign: 'center',
             maxWidth: '768px',
             width: '50vw',
@@ -104,6 +133,7 @@ export default () => {
       <Popup
         flowing
         hoverable
+        position="top left"
         trigger={(
           <Button
             color="red"
@@ -126,6 +156,7 @@ export default () => {
       <Popup
         flowing
         hoverable
+        position="top right"
         trigger={(
           <Button
             style={{
