@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from 'react';
-import { PickSplat } from '../data/Loader';
+import PickSplat from '../data/splats/Splats';
+import Freespace from '../data/weapons/freespaec.png';
 
 export default ({ src, hitIn, propagateChanges }) => {
   const [hit, setHit] = useState(hitIn);
@@ -23,7 +24,7 @@ export default ({ src, hitIn, propagateChanges }) => {
     >
       {hit && (
         <img
-          src={`/img/splats/${PickSplat()}`}
+          src={PickSplat()}
           alt="splatted"
           style={{
             position: 'absolute',
@@ -36,8 +37,8 @@ export default ({ src, hitIn, propagateChanges }) => {
         />
       )}
       <img
-        className={src === 'freespaec.png' ? '' : 'bingoslot'}
-        src={`/img/weapons/${src}`}
+        className={src === Freespace ? '' : 'bingoslot'}
+        src={src}
         alt="splatoon gun"
         style={{ maxWidth: '100%' }}
       />

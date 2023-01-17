@@ -1,5 +1,4 @@
-import Weapons from './weapons.json';
-import Splats from './splats.json';
+import GetWeapons from './weapons/Weapons';
 
 export const Shuffle = (arr) => {
   const arrayIndices = new Set();
@@ -11,11 +10,9 @@ export const Shuffle = (arr) => {
   return ret;
 };
 
-export const PickSplat = () => Splats[Math.floor(Math.random() * Splats.length)];
-
 export const LoadDataOrFallback = () => {
   const stored = window.localStorage.getItem('splatoon_card');
-  return stored ? JSON.parse(stored) : Shuffle(Weapons).map((x) => ({
+  return stored ? JSON.parse(stored) : Shuffle(GetWeapons()).map((x) => ({
     src: x,
     hit: false,
   }));

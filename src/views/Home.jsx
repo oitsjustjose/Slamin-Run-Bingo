@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Popup } from 'semantic-ui-react';
 import BingoSlot from '../components/BingoSlot';
 import { LoadDataOrFallback, SaveDataToAppStorage, ClearSavedData } from '../data/Loader';
+import Freespace from '../data/weapons/freespaec.png';
 
 export default () => {
   const data = LoadDataOrFallback();
@@ -39,7 +40,7 @@ export default () => {
         // Special case for the freespace, which lives at the end of the data array
         cols.push(
           <BingoSlot
-            src="freespaec.png"
+            src={Freespace}
             hitIn={data[data.length - 1].hit}
             key="freespaec"
             propagateChanges={(newState) => {
